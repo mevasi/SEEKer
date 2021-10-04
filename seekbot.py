@@ -1,11 +1,29 @@
 import re
 from time import sleep
 from selenium import webdriver
+from selenium.webdriver.support.select import Select
 
 
-def employer_questions():
+def employer_questions(driver):
     print("questions")
     sleep(10)
+
+    dropdowns = driver.find_elements_by_tag_name("select")
+
+    for box in dropdowns:
+        try:
+            select = Select(box)
+            select.select_by_visible_text('5 years')
+        except:
+            pass
+
+    yesno = driver.find_elements_by_css_selector("[tabindex='0']")
+    for item in yesno:
+        try:
+            item.click()
+        except:
+            pass
+
 
 
 def continue_button(driver):
@@ -32,7 +50,7 @@ def step(driver):
 
         # loop through options for each step
         if option == "Answer employer questions":
-            employer_questions()
+            employer_questions(driver)
             continue_button(driver)
             step(driver)
         elif option == "Update SEEK Profile":
@@ -44,6 +62,8 @@ def step(driver):
         elif option == "Review and submit":
             submit(driver)
     except:
+        sleep(2)
+        print("crashed")
         return
 
 
@@ -101,7 +121,7 @@ def apply(driver, links):
             # select upload cover letter and submit file
             driver.find_element_by_id("coverLetter_0").click()
             cover = driver.find_element_by_id("coverLetterFile")
-            cover.send_keys('C:\\Users\\Admin\\Documents\\Cover.pdf')
+            cover.send_keys('C:\\Users\\Admin\\Documents\\CoverLetter.pdf')
             sleep(2)
             driver.find_element_by_css_selector("[data-testid='continue-button']").click()
             sleep(5)
@@ -115,10 +135,10 @@ if __name__ == '__main__':
     browser = webdriver.Firefox()
     seek_login(browser)
 
-    Page = 111
+    Page = 66
     while 1:
         Page += 1
-        Query = "administration"
+        Query = "management"
         uri = "https://www.seek.com.au/" + Query + "-jobs/in-All-Brisbane-QLD?page=" + str(Page) + "&sortmode" \
                                                                                                    "=ListedDate "
         list_of_IDs = seek_jobsearch(browser, uri)
